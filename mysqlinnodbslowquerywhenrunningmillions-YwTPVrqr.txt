@@ -1,0 +1,62 @@
+SELECT *
+FROM ((SELECT
+         m_in.service_id,
+         m_in.service_id AS service_in,
+         COUNT(m_in.id)  AS num_in
+       FROM tbl_messages m_in
+         LEFT JOIN tbl_message_meta t_in
+           ON t_in.message_id = m_in.id
+         LEFT JOIN tbl_services s_in
+           ON s_in.id = m_in.service_id
+         LEFT JOIN tbl_pools p_in
+           ON p_in.id = s_in.pool_id
+       WHERE inbound_time BETWEEN '2013-02-01 00:00:00'
+           AND '2013-02-28 23:59:59'
+       GROUP BY m_in.service_id) AS rs_in
+   LEFT JOIN (SELECT
+                m_out_m.service_id,
+                m_out_m.service_id AS service_out,
+                COUNT(m_out.id)    AS num_out
+              FROM tbl_outbound_messages m_out
+                LEFT JOIN tbl_messages m_out_m
+                  ON m_out.message_id = m_out_m.id
+                LEFT JOIN tbl_message_meta t_out
+                  ON t_out.message_id = m_out_m.id
+                LEFT JOIN tbl_services s_out
+                  ON s_out.id = m_out_m.service_id
+                LEFT JOIN tbl_pools p_out
+                  ON p_out.id = s_out.pool_id
+              WHERE outbound_time BETWEEN '2013-02-01 00:00:00'
+                  AND '2013-02-28 23:59:59'
+              GROUP BY m_out_m.service_id) AS rs_out
+     ON rs_in.service_id = rs_out.service_id
+   LEFT JOIN (SELECT
+                m_dis.service_id,
+                COUNT(m_dis.id)  AS num_dis
+              FROM tbl_messages m_dis
+                LEFT JOIN tbl_message_meta t_dis
+                  ON t_dis.message_id = m_dis.id
+                LEFT JOIN tbl_services s_dis
+                  ON s_dis.id = m_dis.service_id
+                LEFT JOIN tbl_pools p_dis
+                  ON p_dis.id = s_dis.pool_id
+              WHERE inbound_time BETWEEN '2013-02-01 00:00:00'
+                  AND '2013-02-28 23:59:59'
+                  AND m_dis.status = 'discard'
+              GROUP BY m_dis.service_id) AS rs_dis
+     ON rs_in.service_id = rs_dis.service_id
+   LEFT JOIN (SELECT
+                m_pen.service_id,
+                COUNT(m_pen.id)  AS num_pen
+              FROM tbl_messages m_pen
+                LEFT JOIN tbl_message_meta t_pen
+                  ON t_pen.message_id = m_pen.id
+                LEFT JOIN tbl_services s_pen
+                  ON s_pen.id = m_pen.service_id
+                LEFT JOIN tbl_pools p_pen
+                  ON p_pen.id = s_pen.pool_id
+              WHERE inbound_time BETWEEN '2013-02-01 00:00:00'
+                  AND '2013-02-28 23:59:59'
+                  AND m_pen.status = 'pending'
+              GROUP BY m_pen.service_id) AS rs_pen
+     ON rs_in.service_id = rs_pen.service_id);

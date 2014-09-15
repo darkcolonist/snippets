@@ -1,0 +1,7 @@
+Doctrine_Connection_Mysql_Exception [ 42000 ]: SQLSTATE[42000]: Syntax error or access violation: 1064 You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'to, subject, body, date_created, last_sent, user_id, status, message) VALUES ('s' at line 1
+
+"near 'to' "
+> to is a reserved word
+
+Solution: 
+Doctrine_Manager::connection()->setAttribute(Doctrine::ATTR_QUOTE_IDENTIFIER, true);

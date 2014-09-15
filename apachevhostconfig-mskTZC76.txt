@@ -1,0 +1,106 @@
+##C:\windows\system32\drivers\etc\hosts
+##Hosts file edit
+127.0.0.1       dev.flay
+127.0.0.1       dev.loop
+127.0.0.1       dev.im
+127.0.0.1       dev.im.mine
+127.0.0.1       dev.laravel.dia
+127.0.0.1       dev.test
+127.0.0.1       dev.git
+127.0.0.1       dev.client
+127.0.0.1       dc.deploy
+127.0.0.1       dc.fuse
+
+######################################################################################
+######################################################################################
+######################################################################################
+######################################################################################
+######################################################################################
+######################################################################################
+
+##%APACHE_INSTALL_DIR%/conf/extra/httpd-vhosts.conf
+#
+# Virtual Hosts
+#
+# If you want to maintain multiple domains/hostnames on your
+# machine you can setup VirtualHost containers for them. Most configurations
+# use only name-based virtual hosts so the server doesn't need to worry about
+# IP addresses. This is indicated by the asterisks in the directives below.
+#
+# Please see the documentation at 
+# <URL:http://httpd.apache.org/docs/2.2/vhosts/>
+# for further details before you try to setup virtual hosts.
+#
+# You may use the command line option '-S' to verify your virtual host
+# configuration.
+#
+# Use name-based virtual hosting.
+#
+##NameVirtualHost *:80
+#
+# VirtualHost example:
+# Almost any Apache directive may go into a VirtualHost container.
+# The first VirtualHost section is used for all requests that do not
+# match a ServerName or ServerAlias in any <VirtualHost> block.
+#
+##<VirtualHost *:80>
+    ##ServerAdmin postmaster@dummy-host.localhost
+    ##DocumentRoot "/xampp/htdocs/dummy-host.localhost"
+    ##ServerName dummy-host.localhost
+    ##ServerAlias www.dummy-host.localhost
+    ##ErrorLog "logs/dummy-host.localhost-error.log"
+    ##CustomLog "logs/dummy-host.localhost-access.log" combined
+##</VirtualHost>
+##<VirtualHost *:80>
+    ##ServerAdmin postmaster@dummy-host2.localhost
+    ##DocumentRoot "/xampp/htdocs/dummy-host2.localhost"
+    ##ServerName dummy-host2.localhost
+    ##ServerAlias www.dummy-host2.localhost
+    ##ErrorLog "logs/dummy-host2.localhost-error.log"
+    ##CustomLog "logs/dummy-host2.localhost-access.log" combined
+##</VirtualHost>
+NameVirtualHost *
+<VirtualHost *>
+  DocumentRoot "D:\xampp\htdocs"
+  ServerName localhost
+</VirtualHost>
+<VirtualHost *>
+  DocumentRoot "D:\xampp\htdocs\flay"
+  ServerName dev.flay
+</VirtualHost>
+<VirtualHost *>
+  DocumentRoot "D:\xampp\htdocs\loop"
+  ServerName dev.loop
+</VirtualHost>
+<VirtualHost *>
+  DocumentRoot "D:\xampp\htdocs\im"
+  ServerName dev.im
+</VirtualHost>
+<VirtualHost *>
+  DocumentRoot "D:\xampp\htdocs\im.mine"
+  ServerName dev.im.mine
+</VirtualHost>
+<VirtualHost *>
+  DocumentRoot "D:\xampp\htdocs\laravel.dia\public"
+  ServerName dev.laravel.dia
+</VirtualHost>
+<VirtualHost *>
+  DocumentRoot "D:\xampp\htdocs\test"
+  ServerName dev.test
+</VirtualHost>
+<VirtualHost *>
+  DocumentRoot "D:\_gits"
+  ServerName dev.git
+</VirtualHost>
+<VirtualHost *>
+  DocumentRoot "D:\xampp\htdocs\_clients"
+  ServerName dev.client
+</VirtualHost>
+<VirtualHost *>
+  DocumentRoot "D:\_gits\dc.deploy\public"
+  ServerName dc.deploy
+</VirtualHost>
+<VirtualHost *>
+  DocumentRoot "D:\_gits\dc.fuse\public"
+  ServerName dc.fuse
+</VirtualHost>

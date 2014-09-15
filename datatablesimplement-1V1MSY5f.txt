@@ -1,0 +1,169 @@
+<?php
+/**
+ * nabbed from (src): D:\xampp\htdocs\loop.inbox
+ * nabbed from (svn): r943:/branches/inbox.680/
+ */
+/**
+ * controller code
+ */
+  public function history(){
+    $this->template->add_js('scripts/jquery.dataTables.min.js');
+    $this->template->add_css('styles/ui-lightness/jquery-ui-1.8.19.custom.css');
+    $this->template->add_css('styles/ui-lightness/page.css');
+    $this->template->add_css('styles/ui-lightness/jui.css');
+
+    $columns = array(
+        array('width' => '1%','name' => 'ID'),
+        array('width' => '2%','name' => 'Service'),
+        array('width' => '2%','name' => 'Inbound Time'),
+        array('width' => '10%','name' => 'Inbound Message'),
+        array('width' => '1%','name' => 'Status'),
+        array('width' => '2%','name' => 'Operator'),
+        array('width' => '2%','name' => 'Outbound Time'),
+        array('width' => '10%','name' => 'Outbound Message'),
+    );
+
+    $the_view = $this->load->view('test/content_message_history', array(
+        'columns' => $columns
+    ), true);
+
+    $this->render($the_view);
+  }
+
+  public function history_fetch(){
+    $this->load->helper('text');
+    $limit = $this->input->post('iDisplayLength');
+    $offset = $this->input->post('iDisplayStart');
+
+    $sort_order = $this->input->post('sSortDir_0');
+    $sort_col = 'm.id';
+
+    switch($this->input->post('iSortCol_0')){
+      case 1:
+        $sort_col = 's.name';
+        break;
+      case 2:
+        $sort_col = 'm.inbound_time';
+        break;
+      case 3:
+        $sort_col = 'm.inbound_message';
+        break;
+      case 4:
+        $sort_col = 'm.status';
+        break;
+      case 5:
+        $sort_col = 'o.outbound_time';
+        break;
+      case 6:
+        $sort_col = 'o.outbound_message';
+        break;
+    }
+    
+    $query = Doctrine_Query::create()
+            ->from('TblMessages m')
+            ->leftJoin('m.TblOutboundMessages o')
+            ->leftJoin('m.TblServices s')
+            ->orderBy($sort_col . ' ' . $sort_order)
+            ->limit($limit)
+            ->offset($offset);
+
+    if($this->input->post('sSearch'))
+      $query->andWhere('m.status = ?', $this->input->post('sSearch'));
+
+    $results = $query->execute();
+
+    $formatted_array = array();
+
+    foreach($results as $result){
+      $formatted_array[] = array(
+          $result->id,
+          $result->service_id 
+              ? $result->TblServices->full_name()
+              : 'n/a',
+          $result->inbound_time,
+          character_limiter(util_clean_text($result->inbound_message), 50),
+          $result->status,
+          $result->user_id ? $result->TblUsers->full_name() : 'n/a',
+          $result->TblOutboundMessages->count() ? $result->TblOutboundMessages->getFirst()->outbound_time : 'n/a',
+          $result->TblOutboundMessages->count() 
+              ? character_limiter(util_clean_text($result->TblOutboundMessages->getFirst()->outbound_message), 50)
+              : 'n/a',
+      );
+    }
+
+    $return_data = array(
+        'aaData' => $formatted_array,
+        'iTotalDisplayRecords' => $query->count(),
+        'iTotalRecords' => $query->count(),
+        'sEcho' => $this->input->post('sEcho'),
+        'debug' => $query->getSqlQuery()
+    );
+
+    echo json_encode($return_data);
+  }
+?>
+
+<!-- view -->
+<div id="overlooker">
+  <table cellpadding="0" cellspacing="0" border="0" class="display" id="example">
+    <thead>
+      <tr>
+        <?php foreach($columns as $column):?>
+          <th width="<?php echo $column['width']?>"><?php echo $column['name']?></th>
+        <?php endforeach?>
+      </tr>
+    </thead>
+    <tfoot>
+      <tr>
+        <?php foreach($columns as $column):?>
+          <th><?php echo $column['name']?></th>
+        <?php endforeach?>
+      </tr>
+    </tfoot>
+    <tbody>
+      <tr>
+        <td colspan="<?php echo count($columns)?>" class="dataTables_empty">Loading data from server</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+<button id="resize_plox">le click</button>
+<script type="text/javascript" charset="utf-8">
+  $(document).ready(function() {
+    $('#resize_plox').toggle(function(){
+      $('#overlooker').animate({width: "1300px"}, 2500, function(){
+        $('#resize_plox').click();
+      });
+    },function(){
+      $('#overlooker').animate({width: "1200px"}, 5000, function(){
+        $('#resize_plox').click();
+      });
+    },function(){
+      $('#overlooker').animate({width: "1500px"}, 1000, function(){
+        $('#resize_plox').click();
+      });
+    },function(){
+      $('#overlooker').animate({width: "1000px"}, 5000, function(){
+        $('#resize_plox').click();
+      });
+    });
+
+    $('#example').dataTable( {
+      bAutoWidth: true,
+      bProcessing: true,
+      bServerSide: true,
+      sAjaxSource: "<?php echo base_url()?>test/messages/history_fetch",
+      sPaginationType: "full_numbers",
+      bJQueryUI: true,
+      fnServerData: function ( sSource, aoData, fnCallback ) {
+        $.ajax( {
+          "dataType": 'json',
+          "type": "POST",
+          "url": sSource,
+          "data": aoData,
+          "success": fnCallback
+        } );
+      }
+    } );
+  } );
+</script>

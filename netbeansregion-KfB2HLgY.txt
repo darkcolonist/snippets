@@ -1,0 +1,11 @@
+netbeans tools 
+  > options 
+    > editor 
+      > code templates 
+        > language: PHP 
+          > new 
+            > abbreviation: region code
+
+// <editor-fold defaultstate="collapsed" desc="${cursor}">
+  
+// </editor-fold>

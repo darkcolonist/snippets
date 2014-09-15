@@ -1,0 +1,30 @@
+===========
+ questions
+===========
+a. what is the routine?
+b. what is a tedious process?
+c. what is the biggest problem?
+d. what needs to be removed?
+e. what are your suggestions to make things better?
+
+==========
+ findings
+==========
+1. daily input into excel spreadsheet employee data
+  a. data input
+  b. repetitive process
+  c. it takes up so much time to do
+  d. none
+  e. create a program? an online spreadsheet or data input system
+
+2. notification of all employees in the department
+  a. notification, email blast
+  b. its very repetitive and very tedious to logon to different emails everytime
+  c. it takes up so much time and sometimes we make mistakes when sending out announcements
+  d. the need to logon to multiple accounts
+  e. create an automated announcement process
+
+3
+.
+.
+.

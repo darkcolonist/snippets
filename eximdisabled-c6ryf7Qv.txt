@@ -1,0 +1,38 @@
+Per your request for the time being I have ensured that exim is stopped and will be unable to start again until such time that you have determined that you have resolved the issue.
+
+debug1: Sending command: echo jmccain logging in at Mon Dec 3 00:23:17 CST 2012 >> .bash_history ; /bin/bash -i;
+root@klex [~]# /etc/init.d/exim stop
+Shutting down clamd: [FAILED]
+Shutting down exim: [FAILED]
+Shutting down spamd: [FAILED]
+root@klex [~]# ps fuxa | grep -i exim
+root 12129 0.0 0.0 61172 724 pts/0 S+ 06:23 0:00 \_ grep -i exim
+root@klex [~]# netstat -tlnap | grep -i :25
+root@klex [~]# which exim
+/usr/sbin/exim
+root@klex [~]# stat `which exim`
+File: `/usr/sbin/exim'
+Size: 1166208 Blocks: 2288 IO Block: 4096 regular file
+Device: 803h/2051d Inode: 1441986 Links: 1
+Access: (4755/-rwsr-xr-x) Uid: ( 0/ root) Gid: ( 0/ root)
+Access: 2012-12-02 19:50:03.000000000 -0600
+Modify: 2012-10-25 13:57:24.000000000 -0500
+Change: 2012-11-13 04:03:53.000000000 -0600
+root@klex [~]# chmod 4000 /sbin/exim
+chmod: cannot access `/sbin/exim': No such file or directory
+root@klex [~]# chmod 4000 /usr/sbin/exim
+root@klex [~]# ls -alhs !$
+ls -alhs /usr/sbin/exim
+1.2M ---S------ 1 root root 1.2M Oct 25 13:57 /usr/sbin/exim
+root@klex [~]# exim -bp
+bash: /usr/sbin/exim: Permission denied
+root@klex [~]# 
+
+In order to start exim again you will need to adjust the permissions back to 4755 with chmod 4755 /usr/sbin/exim .
+
+Thank you for choosing SoftLayer!
+
+
+Jeffery M
+Customer Support Technician
+www.softlayer.com

@@ -1,0 +1,19 @@
+What are the new things I learned this week?
+- I learned how to setup windows on my computer
+- I learned how to defragment my hard disks
+- I learned how to configure netbios and workgroup settings
+- I learned how to setup IRQs for hardware settings
+- I learned simple bat scripting in the command prompt
+
+What are the issues and roadblocks I encountered?
+- Some hardware failed to respond
+- One of the harddisks has experienced an irrecoverable bad-sector
+- Some of the installer CDs had a cyclic-redundancy check problem
+
+Did I accomplish the goals for this week? (yes / no-why?)
+- Yes
+
+What are the goals I need to achieve next week?
+- I need to be able to setup advanced networking
+- I need to be able to setup firewall settings
+- I need to be able to setup backup settings and automatic updates

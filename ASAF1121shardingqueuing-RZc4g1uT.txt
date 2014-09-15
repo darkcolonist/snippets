@@ -1,0 +1,82 @@
+[11:35:17 AM] [NMS-O] Asaf Shamir: hey chris
+[11:35:28 AM] Christian Noel G. Reyes: hey Asaf
+[11:35:30 AM] Christian Noel G. Reyes: long time
+[11:35:35 AM] [NMS-O] Asaf Shamir: true :)
+[11:35:39 AM] [NMS-O] Asaf Shamir: how've you been?
+[11:35:47 AM] Christian Noel G. Reyes: okay, you? :)
+[11:35:52 AM] [NMS-O] Asaf Shamir: chugging along
+[11:35:58 AM] Christian Noel G. Reyes: lol
+[11:36:19 AM | Edited 11:36:21 AM] [NMS-O] Asaf Shamir: thats the way for now, will get better :)
+[11:37:00 AM] [NMS-O] Asaf Shamir: got a q.. do you (or guys working with you) have any experience with html5 charts (flow-chart)?
+[11:37:22 AM] Christian Noel G. Reyes: i'm afraid no :(
+[11:37:29 AM] Christian Noel G. Reyes: does this have something to do with the html5 canvas?
+[11:37:37 AM] Christian Noel G. Reyes: we barely got our feet wet with html5
+[11:37:38 AM] [NMS-O] Asaf Shamir: canvas/svg
+[11:37:48 AM] [NMS-O] Asaf Shamir: ooki :)
+[11:37:52 AM] [NMS-O] Asaf Shamir: was worth asking
+[11:37:57 AM] Christian Noel G. Reyes: but if it needs learning, we could :)
+[11:38:03 AM] Christian Noel G. Reyes: i mean if a client needs it
+[11:38:50 AM] [NMS-O] Asaf Shamir: rather less experimentaion..
+[11:39:01 AM] Christian Noel G. Reyes: and that too
+[11:39:26 AM] Christian Noel G. Reyes: btw, a little off-topic
+[11:39:31 AM] [NMS-O] Asaf Shamir: ya
+[11:39:32 AM] Christian Noel G. Reyes: i'm still impressed on how you made pox work so fast
+[11:39:35 AM] [NMS-O] Asaf Shamir: ?
+[11:39:55 AM] Christian Noel G. Reyes: a large system handling multiple users and thousands of messages, yes?
+[11:40:01 AM] [NMS-O] Asaf Shamir: ya.. :)
+[11:40:18 AM] [NMS-O] Asaf Shamir: we had some pain with it too
+[11:40:25 AM] [NMS-O] Asaf Shamir: but i think in the end it worked pretty well
+[11:40:29 AM] [NMS-O] Asaf Shamir: having issues with loop?
+[11:40:38 AM] Christian Noel G. Reyes: nothing of the sort (for now)
+[11:40:40 AM] Christian Noel G. Reyes: but i believe
+[11:40:44 AM] Christian Noel G. Reyes: a few years from now
+[11:40:51 AM] Christian Noel G. Reyes: it'll have a grave issue in terms of scaling
+[11:40:56 AM] Christian Noel G. Reyes: since it uses mysql
+[11:41:03 AM] [NMS-O] Asaf Shamir: yep..
+[11:41:14 AM] [NMS-O] Asaf Shamir: i'd look into queuing solutions
+[11:41:17 AM] [NMS-O] Asaf Shamir: like activemq
+[11:41:43 AM] [NMS-O] Asaf Shamir: or even amazon sqs
+[11:41:52 AM] Christian Noel G. Reyes: nice
+[11:42:05 AM] Christian Noel G. Reyes: was also thinking if linux had also some sort of queueing solution
+[11:42:10 AM] Christian Noel G. Reyes: so that it won't drown the server
+[11:42:13 AM] Christian Noel G. Reyes: talking about apache
+[11:42:47 AM] [NMS-O] Asaf Shamir: linux.. nothing that i was impressed by
+[11:42:52 AM] [NMS-O] Asaf Shamir: you need interfaces for php
+[11:43:10 AM] [NMS-O] Asaf Shamir: activemq works with STOMP (which has a php client implementation), same with SQS
+[11:43:23 AM] Christian Noel G. Reyes: i'd look into those then
+[11:43:44 AM] Christian Noel G. Reyes: but first i need to shard or cluster the database
+[11:44:11 AM] [NMS-O] Asaf Shamir: ya, thats also a bit fun
+[11:44:34 AM] [NMS-O] Asaf Shamir: keep a reference table..
+[11:45:02 AM] [NMS-O] Asaf Shamir: that way you can stard by just sharding into tables, and later shard to different db instances.
+[11:45:14 AM] Christian Noel G. Reyes: ahh makes sense
+[11:45:23 AM] Christian Noel G. Reyes: i was thinking of making a program that would replicate the entire db
+[11:45:45 AM] [NMS-O] Asaf Shamir: for what purpose/
+[11:45:57 AM] Christian Noel G. Reyes: so i can delete old record from the current / live one
+[11:46:20 AM] Christian Noel G. Reyes: major headache too is that the tables aren't flat... integrity issues
+[11:46:51 AM] [NMS-O] Asaf Shamir: you're looking to shard your history table?
+[11:46:56 AM] Christian Noel G. Reyes: yes
+[11:47:09 AM] Christian Noel G. Reyes: as its the biggest table
+[11:47:45 AM] [NMS-O] Asaf Shamir: what i did in one of my recent projects was to shard based on number of records.. 3 million per table
+[11:48:14 AM] [NMS-O] Asaf Shamir: in a reference table i held the start/end date of each shard.. and there's always only one thats active
+[11:48:32 AM] [NMS-O] Asaf Shamir: new records always go to the active table
+[11:48:50 AM] Christian Noel G. Reyes: does that sharding occur every time a record gets added to the active table?
+[11:48:50 AM] [NMS-O] Asaf Shamir: receipts/updates do a lookup on tables within a date range..
+[11:49:32 AM] [NMS-O] Asaf Shamir: got a process that runs every 20 minutes, and if the table exceeded the max records, it creates a new shard (parition), and then sets it as active
+[11:50:06 AM] [NMS-O] Asaf Shamir: in the end, tables have a bit over 3 million records.. sometimes 3,000,100 sometimes 3,0005000..
+[11:50:27 AM] [NMS-O] Asaf Shamir: active shard (partition/table) name is also kept in memcache
+[11:51:03 AM] [NMS-O] Asaf Shamir: on switch, we simply update move the active flag to the new shard, set it in memcache, and all processes start writing to that.
+[11:51:37 AM] Christian Noel G. Reyes: i get it now
+[11:51:38 AM] [NMS-O] Asaf Shamir: makes sense?
+[11:52:08 AM] [NMS-O] Asaf Shamir: i chose not to do it based on date (i.e. once a day/month) because i could always have a day with LOTS of messages and days with smaller amounts.
+[11:52:57 AM] Christian Noel G. Reyes: just use an indexed column, say, id
+[11:53:04 AM] [NMS-O] Asaf Shamir: when we lookup history, i get a list of tables that match the timeframe, and get records from them
+[11:53:05 AM] Christian Noel G. Reyes: that's what i do
+[11:53:21 AM] [NMS-O] Asaf Shamir: indexed column?
+[11:53:31 AM] Christian Noel G. Reyes: i mean, the ID column so its faster to search
+[11:54:08 AM] [NMS-O] Asaf Shamir: but you're not picking up messages based on id's usually, are you?
+[11:54:25 AM] [NMS-O] Asaf Shamir: wouldn't it be a search based on mobile number, get the last 100 records?
+[11:54:51 AM] Christian Noel G. Reyes: i mean when selecting the last 1000+ messages
+[11:55:06 AM] Christian Noel G. Reyes: overall
+[11:55:43 AM] Christian Noel G. Reyes: anyway, thanks for the suggestions and advise i will try to make some mockups and see if it works :)
+[11:56:10 AM] [NMS-O] Asaf Shamir: sure.. buzz me if you have questions.
+[11:56:32 AM] Christian Noel G. Reyes: thanks Asaf

@@ -1,0 +1,9 @@
+electricity usage
+Gaming Computer @ full load, 24/7 for 30days (400 watts)
+= PHP 3816.00 / MO
+
+Gaming Computer @ idle, 24/7 for 30days (110 watts)
+= PHP 1049.40 / MO
+
+NAS @ full load, 24/7 for 30 days (19.4watts)
+= PHP 185.07 / MO

@@ -1,0 +1,29 @@
+Thank you for choosing SoftLayer. A representative will be with you shortly. Be sure to check out our newest innovation, SoftLayer Object Storage
+You are now chatting with 'Josh H'
+Martin Eyking: ***** / *****
+Josh H: Hello, thank you for contacting SoftLayer. How can I help you today?
+Martin Eyking: hi, can you please direct me to technical support?
+Josh H: yes
+Josh H: one moment please
+Please wait while I transfer the chat to the best suited site operator.
+You are now chatting with 'Lyndell R'
+Martin Eyking: hi
+Lyndell R: Hello, thank you for contacting SoftLayer. How can I help you today?
+Martin Eyking: Hi, I can't access my cloud instance and i think it went down... i tried restarting it but it still doesn't show an uptime.
+Martin Eyking: what is going on?
+Martin Eyking: my cloud instance: *************************************
+Lyndell R: We are having a problem with the network and this affecting the functionality of the server.
+Lyndell R: We are working to get ir resolved as quickly as possible.
+Martin Eyking: we have critical live services that needs to be up immediately :(
+Lyndell R: I am sorry for the situation. I don't have an ETA. We are working to resolve it as quickly as possible.
+Lyndell R: Is there anything else I may assist you with?
+Martin Eyking: may i ask an estimate when the service will be back up again? this is so that i can notify my clients of this downtime
+Lyndell R: I have no estimate. We are working to fix it as quickly as possible.
+Martin Eyking: okay, we'll just wait for it then
+Lyndell R: I have disabled CPHulk. You should be able to login. now
+Martin Eyking: via ssh?
+Lyndell R: I'm sorry, Please disregard that last comment.
+Lyndell R: Anything else I may assist you with?
+Martin Eyking: none at the moment
+Lyndell R: Thank you for choosing SoftLayer.  We value your feedback.  Please click the “Close” button at top right to answer a few questions about your experience with us today.
+Chat session has been terminated by the site operator.

@@ -1,0 +1,15 @@
+for(i = 0 ; function(){
+	if(true or function(){
+		return $is_male ? "lalake" : $is_gay ? function($is_gay){
+			if($is_gay == "50.000000000000000000000000001%" || function(){
+				return "alien";
+			}){
+				return "lesbian";
+			}else{
+				
+			}
+		} : "babae"
+	})
+} ; i++){
+	echo "hahahaha!!";
+}

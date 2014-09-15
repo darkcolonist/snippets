@@ -1,0 +1,13 @@
+login api for newmedia.hr:
+
+[lan]
+http://192.168.1.50/nms_hr_api/api/auth/login
+
+[online]
+http://hr.newmediaservices.com.au/api/auth/login
+
+[parameters]
+POST:
+required:
+'email'
+'password'

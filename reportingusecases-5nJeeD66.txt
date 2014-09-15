@@ -1,0 +1,21 @@
+Use Cases:
+- software stability with regards to a range of 70-100 online and chatting operators
+- software stability with regards to a range of 70-100 subscribers
+- chat / mapping algorithm
+- browser compatibility / problems / issues
+- user experience feedback
+- recommendations
+- usability of the entire system (as based from user experience)
+
+Expected results later this afternoon: (example)
+- software stability with regards to a range of 70-100 online and chatting operators
+.: system was stable when there were 30 users online
+.: system slowdown was detected when there were 50+ online users
+.: system crashed upon reaching 80 users
+
+- software stability with regards to a range of 70-100 subscribers
+.: system was stable when there were 200 subscribers
+.: slowdown was detected in mock module when there were 300 subscribers
+.: system crash on 600 subscribers
+
+... and so on...

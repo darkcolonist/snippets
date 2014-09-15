@@ -1,0 +1,89 @@
+/**
+ * nabbed from: loop.moderation/application/views/test/content_datatables.php
+ * @return {[type]} [description]
+ */
+$(document).ready(function() {
+    $('#example').dataTable( {
+      bAutoWidth: true,
+      bProcessing: true,
+      bServerSide: true,
+      sAjaxSource: "<?php echo url::base()?>test/datatables/data",
+      sPaginationType: "full_numbers",
+      bJQueryUI: true,
+      aoColumnDefs:[{
+        aTargets: [2],
+        /**
+         * since our data source doesn't contain a 3rd column
+         * data, force return empty string
+         * @param  {[type]} source [description]
+         * @param  {[type]} type   [description]
+         * @param  {[type]} val    [description]
+         * @return {[type]}        [description]
+         */
+        mData: function(source, type, val){
+          return "";
+        },
+        /**
+         * render the toolbox column
+         * @param  {[type]} nTd   [description]
+         * @param  {[type]} sData [description]
+         * @param  {[type]} oData [description]
+         * @param  {[type]} iRow  [description]
+         * @param  {[type]} iCol  [description]
+         * @return {[type]}       [description]
+         */
+        fnCreatedCell : function (nTd, sData, oData, iRow, iCol){
+          var theTd = $(nTd);
+          var toolset = $("<div>\
+              <a class=\"action info\" href=\"#info\">act-info</a>\
+              <a class=\"action edit\" href=\"#edit\">act-edit</a>\
+              <a class=\"action delete\" href=\"#delete\">act-delete</a>\
+            </div>");
+
+          toolset.find(".info").data("action", "info");
+          toolset.find(".edit").data("action", "edit");
+          toolset.find(".delete").data("action", "delete");
+          toolset.find(".action").data("id", oData[0]);
+
+          theTd.addClass("center");
+
+          var buttonSet = toolset.buttonset({
+            text : false
+          });
+
+          buttonSet.find(".delete").button({
+            icons : {primary : "ui-icon-trash"}
+            , text : false
+          });
+          buttonSet.find(".edit").button({
+            icons : {primary : "ui-icon-pencil"}
+            , text : false
+          });
+          buttonSet.find(".info").button({
+            icons : {primary : "ui-icon-search"}
+            , text : false
+          });
+
+          theTd.html(toolset.buttonset());
+        }
+      }],
+      fnServerData: function ( sSource, aoData, fnCallback ) {
+        $.ajax( {
+          "dataType": 'json',
+          "type": "POST",
+          "url": sSource,
+          "data": aoData,
+          "success": fnCallback
+        } );
+      }
+    } );
+
+    // handle the events
+    $("#example").on("click", "a", function(e){
+      e.preventDefault();
+
+      $("#action").val($(this).data("action"));
+      $("#data").val($(this).data("id"));
+    })
+
+  } );

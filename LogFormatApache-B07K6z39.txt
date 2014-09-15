@@ -1,0 +1,11 @@
+# taken from: http://superuser.com/questions/64238/how-to-find-out-from-apache-what-pages-cause-long-loading-times
+<IfModule mod_log_config.c>
+    LogFormat "%h %l %u %t \"%r\" %>s %b \"%{Referer}i\" \"%{User-Agent}i\"" combined
+    # LogFormat "%h %l %u %t \"%r\" %>s %b" common
+    LogFormat "%h %l %u %t \"%r\" %>s %b sec:%T usec:%D" common
+    LogFormat "%{Referer}i -> %U" referer
+    LogFormat "%{User-agent}i" agent
+
+    CustomLog logs/access_log common
+
+</IfModule>

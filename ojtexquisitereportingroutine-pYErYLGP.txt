@@ -1,0 +1,50 @@
+btw Del & Chard, make the status reports weekly
+[9:18:14 AM] Christian Noel Reyes: Del & Chard please provide a status report on your respective teams' projects. Be concise.
+
+sample:
+- started development
+- accomplished login page
+- accomplished registration page
+- there's a problem in the ajax, can be fixed soon
+* unable to continue with the landing pages upon logon due to session problem (need assistance)
+* we need help on the templating of codeigniter
+[11/28/2013 11:23:04 AM] Delfin Tokyas: ok sir
+[11/28/2013 11:25:07 AM] Richard Dizon Guieb: Noted sir.
+[11/28/2013 11:43:32 AM] Christian Noel Reyes: Del & Chard
+
+Please send the email
+To: cnr@newmediaservices.com.au
+Cc: vb@newmediastaff.com, ka@newmediaservices.com.au
+[11/28/2013 11:43:50 AM] Christian Noel Reyes: also, kindly CC your respective team members
+^ this status report
+[9:19:13 AM] Delfin Tokyas: noted sir..
+[9:20:06 AM] Richard Dizon Guieb: copy that sir
+[9:20:49 AM] Christian Noel Reyes: please send them every Friday: 5pm GMT+8
+also, please include the total work hours rendered by your workmates for the given week.
+
+please follow this sample format:
+Delfin: 32h (64h)
+Jay: 15h (30h)
+...
+where:
+<name>: <week hours> (<total hours>)
+[9:21:00 AM] Christian Noel Reyes: include this at the end of your weekly report
+[9:21:05 AM] Christian Noel Reyes: make it your footer
+[9:21:27 AM] Christian Noel Reyes: any questions?
+[9:21:44 AM] Delfin Tokyas: how about the homebase sir
+[9:22:30 AM] Christian Noel Reyes: thank you for raising this question
+[9:22:35 AM] Delfin Tokyas: i will be creating a tasks list for my team and i will be basing thier homebase on the tasks
+[9:24:40 AM] Christian Noel Reyes: [9:20 AM] Christian Noel Reyes: 
+
+<<< please follow this sample format:
+Delfin: 32h (64h)
+Jay: 15h (30h)
+...
+where:
+<name>: <week hours> (<total hours>)
+please modify this in such a way:
+Delfin: 32h, 8h | 64h, 16h | (80h)
+Jay: ...
+...
+where:
+<name>: <office hours>, <home hours> | <total office hours>, <total home hours> | <grand total>

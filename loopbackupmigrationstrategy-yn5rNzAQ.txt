@@ -1,0 +1,28 @@
+/* before */
+[
+  tbl_messages_meta,
+  tbl_messages,
+]
+
+/* after */
+{
+  meta : {
+    table : tbl_messages_meta,
+    sort_col : [id, date],
+    sort_order : [asc, asc],
+  },
+  messages : {
+    table : tbl_messages,
+    sort_col : [id],
+    sort_order : [asc],
+  }
+}
+
+script.php?t=meta
+script.php?t=messages
+
+n = 10000
+query n from prod
+process n in script server
+insert n into archive
+delete n from prod

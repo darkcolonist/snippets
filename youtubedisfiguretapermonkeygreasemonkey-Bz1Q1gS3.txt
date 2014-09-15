@@ -1,0 +1,55 @@
+// ==UserScript==
+// @name         remove youtube header
+// @namespace    jQueryForChromeExample
+// @include      http*://*youtube.com/*
+// @match        https://www.youtube.com/*
+// @author       Christian Noel Reyes
+// @description  This userscript is meant to disfigure youtube using jQuery in a userscript on Google Chrome. (eg: https://dl.dropboxusercontent.com/u/617821/images/tapermonkey-youtube-disfigure-example.png)
+// ==/UserScript==
+
+// a function that loads jQuery and calls a callback function when jQuery has finished loading
+function addJQuery(callback) {
+  var script = document.createElement("script");
+  script.setAttribute("src", "//ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js");
+  script.addEventListener('load', function() {
+    var script = document.createElement("script");
+    script.textContent = "window.jQ=jQuery.noConflict(true);(" + callback.toString() + ")();";
+    document.body.appendChild(script);
+  }, false);
+  document.body.appendChild(script);
+}
+
+// the guts of this userscript
+function main() {
+  // Note, jQ replaces $ to avoid conflicts.
+  jQ("#masthead-positioner").remove();
+  jQ("#watch7-sidebar-contents").remove();
+  jQ("#masthead-positioner-height-offset").remove();
+  jQ("#watch7-container").remove();
+  jQ("#footer-container").remove();
+    jQ("body").css({
+        background: 'url("https://dl.dropboxusercontent.com/u/617821/images/hq.walls/overloaded.jpg")'
+    });
+    
+    jQ(".html5-player-chrome.html5-stop-propagation").css({
+        background: '#0F314C'
+    });
+    
+    jQ("#player").css({
+        margin: 0
+    });
+    
+    jQ(".ytp-play-progress").css({
+        backgroundColor: "#0F314C"
+    });
+    
+    jQ(".ad-container").css({
+        display: "none"
+    });
+    
+    jQ("[rel='shortcut icon']").attr("href", "https://dl.dropboxusercontent.com/u/617821/images/gnome-wat-icon.png");
+    jQ("[rel='icon']").attr("href", "https://dl.dropboxusercontent.com/u/617821/images/gnome-wat-icon.png");
+}
+
+// load jQuery and execute the main function
+addJQuery(main);

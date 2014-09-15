@@ -1,0 +1,70 @@
+######################################## HTML TEMPLATE #############################
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+
+<title><?=$title?></title>
+
+<!-- styles go here -->
+<?=$styles?>
+
+<!-- scripts go here -->
+<?=$scripts?>
+</head>
+
+<body>
+
+<?=$content?>
+
+</body>
+
+</html>
+
+######################################## WRAPPER TEMPLATE #############################
+	<div id="mainWrapper">
+		<?=$content?>
+	</div>
+
+######################################## LOGIN CONTENT #############################
+		<form>
+			<label>Username</label>
+			<input type="text" value="" />
+			<label>Password</label>
+			<input type="password" value="" />
+			<input type="submit" value="Login" />
+		</form>
+
+######################################## ADMIN TEMPLATE #############################
+		<div id="header">Welcome to the Chat Service (logged in as shan123) [ chat | profile | logout ]</div>
+		<div id="leftPane">
+			<?=$leftPaneContent?>
+		</div>
+		<div id="rightPane">
+			<?=$rightPaneContent?>
+		</div>
+		<div id="footer">&copy; Shannon 2013</div>
+
+######################################## LEFT PANE CHAT CONTENT #############################
+			<ul>
+				<li class="usersHeader">Users</li>
+				<li>cris2154</li>
+				<li>cris2155</li>
+				<li>cris2156</li>
+			</ul>
+
+######################################## RIGHT PANE CHAT CONTENT #############################
+			<div class="chatWrapper">
+				<div id="converationBox"><!-- conversation history go here --></div>
+				<div id="conversationForm"><!-- form goes here --></div>
+			</div>
+
+######################################## LEFT PANE PROFILE CONTENT #############################
+			<!-- empty space -->&nbsp;<!-- empty space -->
+
+######################################## RIGHT PANE PROFILE CONTENT #############################
+			<div class="profileWrapper">
+				<div id="profileForm"><!-- form goes here --></div>
+			</div>

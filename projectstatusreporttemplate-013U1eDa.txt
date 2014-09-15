@@ -1,0 +1,36 @@
+// status report of project is somewhat similar to that of scrum, however, more elaborate.
+1. what has been accomplished?
+	eg.
+	- fixed the email sender
+		- the email sending feature was disabled
+		- we asked assistance from support to activate the mailer service
+		- we installed a new mailer client
+		- restrictions applied
+	- fixed the firewall issue
+		- new firewall installed, configured and activated
+		- asked assistance from support to setup the hardware
+	- upgraded php and mysql
+		- downloaded new binaries of apache
+		- removed old apache, php and mysql
+		- cleaned filesystem
+		- installed new apache, php and mysql
+		- activated httpd and mysql service
+
+2. what are the issues / roadblocks?
+	eg.
+	- support takes time to reply
+	- some bad clusters detected in rack1, raid0
+		- we will still ask for assistance from support
+	- some services fail to start due to the upgrade
+	- there are some issues with the old scripts not working on the upgrade
+	- migration issues, some domains fail to run
+	
+3. what needs to be accomplished?
+	eg.
+	- solve all problems in the issues and roadblocks
+	- implement new policies in sending mail
+	- implement new coding standards
+	- migrate new sites
+	- activate new domains
+	- notify clients about mailer change
+	- notify reseller accounts of the upgrade

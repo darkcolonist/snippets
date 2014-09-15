@@ -1,0 +1,13 @@
+static function prepare_dropdown($list, $blank = "- please select one -") {
+  $new_list = array();
+  $new_list[0] = $blank;
+
+  foreach($list as $key => $item){
+    $new_list[$key] = $item;
+  }
+
+  // do some moar here
+  // to be concluded...
+
+  return $new_list;
+}

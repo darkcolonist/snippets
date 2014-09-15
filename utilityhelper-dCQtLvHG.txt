@@ -1,0 +1,623 @@
+/**
+ * @title: util
+ * @description: a singleton utility class that can be implemented in 
+ *               native or framework-based php applications. this utility
+ *               singleton contains the frequently used functions on common
+ *               day-to-day tasks.
+ * @author: christian noel reyes <me@misty-stix.com>
+ * @date created: 2012-06-02
+ * @changelog-2013-01-07: added remove_array_indices
+ * @changelog-2013-01-22: added array2table
+ * @changelog-2013-01-23: made log, and logcsv static
+ * @changelog-2013-01-28: added doctrine profiler
+ * @changelog-2013-02-05: modified add trace timestamp to support a larger figure
+ * @changelog-2013-02-05: added date-range validator
+ */
+class Util {
+  protected static $_timer_start_time = null;
+  protected static $_trace_enabled = false;
+  protected static $_timer_started = false;
+  static $stacktrace = array();
+
+  /**
+   *start the timer
+   */
+  static function timer_start() {
+    self::$_timer_start_time = self::microtime();
+    self::$_timer_started = true;
+  }
+
+  /**
+   * returns current timelapse
+   * @return real
+   */
+  static function timer_current(){
+    if (self::$_timer_start_time == 0)
+      return 0.00;
+
+    $total = self::microtime() - self::$_timer_start_time;
+
+    return number_format($total, 2);
+  }
+
+  /**
+   * returns current timelapse and clears timers
+   * @return real
+   */
+  static function timer_end() {
+    if (self::$_timer_start_time == 0)
+      return 0.00;
+
+    $total = self::microtime() - self::$_timer_start_time;
+
+    self::$_timer_start_time = null;
+    self::$_timer_started = false;
+
+    return number_format($total, 2);
+  }
+
+  static function enable_tracing() {
+    self::$_trace_enabled = true;
+  }
+
+  static function disable_tracing() {
+    self::$_trace_enabled = false;
+    self::$stacktrace = array();
+  }
+
+  static function microtime() {
+    list($usec, $sec) = explode(" ", microtime());
+    return ((float) $usec + (float) $sec);
+  }
+
+  /**
+   *
+   * profiler type tracing
+   * trace variables, objects as well as message strings
+   * also shows queue #, time, memory usage (MB)
+   *
+   * @param mixed $message
+   */
+  static function add_trace($message){
+    if(self::$trace_enabled){
+      $timestamp = self::microtime();
+      $timestamp = substr($timestamp, 7, 7);
+      $timestamp = number_format($timestamp, 2);
+
+      $mem = round(memory_get_usage() / 1024 / 1024).'M';
+
+      self::$stacktrace[count (self::$stacktrace).'|'.$timestamp.'|'.$mem] = $message;
+    }
+  }
+
+  static function debug($variable) {
+    return '<pre>' . print_r($variable, true) . '</pre>';
+  }
+
+  static function show_trace() {
+    if (self::$_trace_enabled) {
+      $le_keys = array_keys(self::$stacktrace);
+
+      if (count($le_keys) > 0) {
+        $first_key = $le_keys[0];
+        $last_key = $le_keys[count($le_keys) - 1];
+
+        $first_key_segments = explode('|', $first_key);
+        $last_key_segments = explode('|', $last_key);
+
+        $summary = array(
+            'total' => $last_key_segments[0]
+            , 'time' => number_format($last_key_segments[1] - $first_key_segments[1], 3) . 'sec'
+            , 'memory' => $last_key_segments[2]
+        );
+
+        self::add_trace('trace compiled! summary: ' . json_encode($summary));
+      } else {
+        self::add_trace('zero trace. what are you trying to do?');
+      }
+
+
+      $final_trace = self::debug(self::$stacktrace);
+
+      return $final_trace;
+    }
+    else
+      return 'tracing disabled, enable via "LoopHelper::enable_tracing();"';
+  }
+
+  static function log($dump, $name, $directory, $separate_per_date = true){
+    // CHANGETHIS
+    $logs_directory = APPPATH . "../../{$directory}/";
+
+    if(!is_writable($logs_directory))
+      return false;
+
+    if(file_exists($logs_directory) == false)
+      return;
+
+    $dump = rtrim($dump, "\n");
+    $dump = str_replace("\n", "\n\t", $dump);
+
+    if($separate_per_date){
+      $time_stamp = self::datetime(null, "Asia/Manila")->format("H:i:s");
+      $date_file = self::datetime(null, "Asia/Manila")->format("Y-m-d");
+      $file = "{$logs_directory}{$name}-{$date_file}.txt";
+    }
+    else{
+      $time_stamp = self::datetime(null, "Asia/Manila")->format("m-d H:i:s");
+      $file = "{$logs_directory}{$name}.txt";
+    }
+
+    $mem = round(memory_get_usage() / 1024 / 1024).'M';
+    $time_stamp .= '|'.$mem;
+
+    if(self::$_timer_started){
+      $time_stamp .= "|".self::timer_current()."s";
+    }
+
+    $dump = "[{$time_stamp}]\t{$dump}";
+
+    $file_data = "\n$dump";
+
+    if(file_exists($file)){
+      $fh = fopen($file, 'a') or die("can't open file");
+    }else{
+      $fh = fopen($file, 'w') or die("can't open file");
+      $file_data = ltrim($file_data, "\n");
+    }
+
+    fwrite($fh, $file_data);
+    fclose($fh);
+
+    return true;
+  }
+
+  /**
+   * logs in csv format:
+   * timestamp, memory, timelapse, [<assoc_array_merge> $dump]
+   *
+   * @param assoc $dump
+   * @param string $name
+   * @param string $directory
+   * @param boolean $separate_per_date
+   * @return boolean
+   */
+  static function logcsv($dump, $name, $directory, $separate_per_date = true){
+    // CHANGETHIS
+    $logs_directory = APPPATH . "../../{$directory}/";
+
+    if(!is_writable($logs_directory))
+      return false;
+
+    if(file_exists($logs_directory) == false)
+      return;
+
+    if($separate_per_date){
+      $time_stamp = self::datetime(null, "Asia/Manila")->format("H:i:s");
+      $date_file = self::datetime(null, "Asia/Manila")->format("Y-m-d");
+      $file = "{$logs_directory}{$name}-{$date_file}.csv";
+    }
+    else{
+      $time_stamp = self::datetime(null, "Asia/Manila")->format("Y-m-d H:i:s");
+      $file = "{$logs_directory}{$name}.csv";
+    }
+
+    $mem = round(memory_get_usage() / 1024 / 1024);
+
+    $primary_dump = array(
+        $time_stamp // date
+        , $mem      // memory
+        , self::$_timer_started
+            ? self::timer_current()
+            : 0.00  // timelapse
+    );
+
+    $dump = array_merge($primary_dump, $dump);
+
+    if(file_exists($file)){
+      $fh = fopen($file, 'a') or die("can't open file");
+    }else{
+      $fh = fopen($file, 'w') or die("can't open file");
+      // header
+      fputcsv($fh, array("date", "memory", "timelapse"));
+    }
+    
+    fputcsv($fh, $dump);
+    fclose($fh);
+
+    return true;
+  }
+
+ /**
+   * @param string $date_string
+   * @param string $timezone_string eg:"Asia/Manila"
+   * @param string $convert_to_timezone eg:"Asia/Manila"
+   * @return \DateTime
+   */
+  static function datetime($date_string, $timezone_string = null, $convert_to_timezone = null){
+    if(is_null($timezone_string))
+      $timezone_string = date_default_timezone_get();
+
+    $timezone = new DateTimeZone($timezone_string);
+    $datetime = new DateTime($date_string, $timezone);
+
+    if(!is_null($convert_to_timezone)){
+      $datetime->setTimezone(new DateTimeZone($convert_to_timezone));
+    }
+
+    return $datetime;
+  }
+
+  /**
+   * sanitize a string
+   * levels:
+   * 0 = default, just trim spaces
+   * 1 = advanced, convert special characters to html entities (default)
+   * 2 = expert-enhanced, only retain specific characters in REGEXP
+   * 3 = expert-mysql, filter also for mysql queries
+   *
+   * @param string $data
+   * @param int $level
+   * @return string
+   */
+  static function sanitize($data, $level = 1){
+
+    //remove spaces from the input
+    $data = trim($data);
+
+    //convert special characters to html entities
+    if($level > 0){
+      $data = str_replace("<br>", "\n", $data);
+      $data = str_replace("<br />", "\n", $data);
+      $data = str_replace("<br/>", "\n", $data);
+      $data = strip_tags($data, "<img><a>");
+      $data = htmlspecialchars($data);
+      $data = nl2br($data);
+    }
+
+    // Remove all unwanted chars. Keep only the ones listed
+    if($level > 1) $data = preg_replace('/[^A-Za-z0-9]/is', '', $data );
+
+    //sanitize before using any MySQL database queries
+    if($level > 2) $data = mysql_real_escape_string($data);
+    
+    return $data;
+  }
+
+  /**
+   * presents a two-dimensIONal array into a table
+   *
+   * converts:
+   * {
+   *   "name" : "cris",
+   *   "age" : 18,
+   *   "gender" : "male"
+   * }
+   *
+   * into:
+   * <table class="tbl-data">
+   * 	<tr><td class="row-label">name</td><td class="row-value">cris</td></tr>
+   * 	<tr><td class="row-label">age</td><td class="row-value">18</td></tr>
+   * 	<tr><td class="row-label">gender</td><td class="row-value">male</td></tr>
+   * </table>
+   *
+   * var $callbacks:
+   * - "field" => "callback"
+   * - do some additional functions to field using predefined callback
+   * - there must be an existing function "callback"
+   * - eg: "name" => "Util::format_name"
+   * - process: Util::format_name("name")
+   *
+   * var $options: (classes, defaults)
+   * - table: "tbl-data"
+   * - label: "row-label"
+   * - value: "row-value"
+   *
+   * var $omit:
+   * - fields to skip
+   */
+  static function tablify_array($arr, $callbacks = array(), $options = array(), $omit = array()) {
+    $final_options = array(
+        "table" => empty($options["table"]) ? "tbl-data" : $options["table"]
+        , "label" => empty($options["label"]) ? "row-label" : $options["label"]
+        , "value" => empty($options["value"]) ? "row-value" : $options["value"]
+    );
+
+    if(count($arr) == 0)
+      return 1;
+
+    $tablified = "";
+    $tablified .= "<table class='{$final_options["table"]}'>";
+
+    foreach($arr as $key => $value){
+      $result = array_search($key, $omit);
+
+      if(array_search($key, $omit) !== false) continue;
+      
+      $tablified .= "<tr>";
+
+        if(count($callbacks) > 0){
+          if(!empty($callbacks[$key])){
+            if(!is_callable($callbacks[$key])) return "error: function {$callbacks[$key]} is not callable.";
+            eval("\$value = $callbacks[$key](\"".html::specialchars($value)."\");");
+          }
+        }
+
+        $tablified .= "<td class='{$final_options["label"]}'>";
+        $tablified .= $key;
+        $tablified .= "</td>";
+
+        $tablified .= "<td class='{$final_options["value"]}'>";
+
+        if(is_array($value)){
+          $tablified .= self::tablify_array($value, $callbacks, $options, $omit);
+        }else{
+          $tablified .= $value;
+        }
+
+        $tablified .= "</td>";
+        
+      $tablified .= "</tr>";
+    }
+
+    $tablified .= "</table>";
+
+    return $tablified;
+  }
+
+  /**
+   * converts an array into an sql IN parameter
+   * input:
+   * $arr = array(
+   *     "\"val 1\"",
+   *     "v3",
+   *     "value4",
+   *     5,
+   *     "six"
+   * );
+   *
+   * output:
+   * ("\"val 1\"","v3","value4","5","six")
+   *
+   * can be used in:
+   * select * from table where name in ("\"val 1\"","v3","value4","5","six")
+   *
+   * @param assoc $arr
+   * @return string
+   */
+  static function implode_sqlin($arr){
+    if(!is_array($arr) || count($arr) == 0) return false;
+
+    $converted = "";
+    foreach($arr as $value){
+      $value = str_replace("\"", "\\\"", $value);
+      $converted .= "\"{$value}\",";
+    }
+    $converted = rtrim($converted, ",");
+    $converted = "({$converted})";
+
+    return $converted;
+  }
+
+  /**
+   *
+   * sample input for $haystack:
+   * array(
+   *  0 => array(       .: test 1:.        .: test 2:.
+   *    "u_id" => 5,	  $v1_name : u_id	   $v1_name : u_id
+   *    "p_id" => 10	  $v2_name : p_id	   $v2_name : p_id
+   *  ),                $v1 : 7            $v1 : 8
+   *  1 => array(       $v2 : 10	         $v2 : 10
+   *    "u_id" => 6,	  return: true	     return: false
+   *    "p_id" => 10
+   *  ),
+   *  2 => array(
+   *    "u_id" => 7,
+   *    "p_id" => 10
+   *  )
+   * )
+   *
+   * @param assoc $haystack
+   * @param string $v1_name
+   * @param string $v1
+   * @param string $v2_name
+   * @param string $v2
+   * @return boolean
+   */
+  static function lookup($haystack, $v1_name, $v1, $v2_name, $v2){
+    if(count($haystack) == 0)
+      return false;
+
+    foreach($haystack as $haystrand){
+      if(isset($haystrand[$v1_name]) && isset($haystrand[$v2_name]))
+        if($haystrand[$v1_name] == $v1 && $haystrand[$v2_name] == $v2)
+          return true;
+    }
+    return false;
+  }
+
+  /**
+   * unset unwanted array keys
+   *
+   * removes all other keys in the $array except the ones in $keep_keys
+   *
+   * @param assoc $result_array
+   * @param assoc $keep_keys
+   */
+  static function remove_array_indices($result_array, $keep_keys){
+    foreach($result_array as $key => $result_item){
+      $new_result_item = array();
+      foreach($keep_keys as $the_key){
+        $new_result_item[$the_key] = $result_item[$the_key];
+      }
+      $result_array[$key] = $new_result_item;
+    }
+
+    return $result_array;
+  }
+
+  /**
+   * Translate a result array into a HTML table
+   *
+   * @author      Aidan Lister <aidan@php.net>
+   * @version     1.3.2
+   * @link        http://aidanlister.com/2004/04/converting-arrays-to-human-readable-tables/
+   * @param       array  $array      The result (numericaly keyed, associative inner) array.
+   * @param       bool   $recursive  Recursively generate tables for multi-dimensional arrays
+   * @param       string $null       String to output for blank cells
+   */
+  static function array2table($array, $recursive = false, $null = '&nbsp;') {
+    // Sanity check
+    if (empty($array) || !is_array($array)) {
+      return false;
+    }
+
+    if (!isset($array[0]) || !is_array($array[0])) {
+      $array = array($array);
+    }
+
+    // Start the table
+    $table = "<table>\n";
+
+    // The header
+    $table .= "\t<tr>";
+    // Take the keys from the first row as the headings
+    foreach (array_keys($array[0]) as $heading) {
+      $table .= '<th>' . $heading . '</th>';
+    }
+    $table .= "</tr>\n";
+
+    // The body
+    foreach ($array as $row) {
+      $table .= "\t<tr>";
+      foreach ($row as $cell) {
+        $table .= '<td>';
+
+        // Cast objects
+        if (is_object($cell)) {
+          $cell = (array) $cell;
+        }
+
+        if ($recursive === true && is_array($cell) && !empty($cell)) {
+          // Recursive mode
+          $table .= "\n" . self::array2table($cell, true, true) . "\n";
+        } else {
+          $table .= (strlen($cell) > 0) ?
+                  htmlspecialchars((string) $cell) :
+                  $null;
+        }
+
+        $table .= '</td>';
+      }
+
+      $table .= "</tr>\n";
+    }
+
+    $table .= '</table>';
+    return $table;
+  }
+
+  static $doctrine_profiler;
+  /**
+   * initializes a doctrine profiler instance
+   * @return Doctrine_Connection_Profiler
+   */
+  static function doctrine_profiler_begin() {
+    self::$doctrine_profiler = new Doctrine_Connection_Profiler();
+    $conn = Doctrine_Manager::connection();
+    $conn->setListener(self::$doctrine_profiler);
+
+    return self::$doctrine_profiler;
+  }
+
+  /**
+   * ends the doctrine profiler and returns tabular representation of the
+   * profiler.
+   * note: you need to run self::doctrine_profiler_begin first before
+   *  self::doctrine_profiler_end
+   * @return boolean|string
+   */
+  static function doctrine_profiler_end() {
+    if(empty(self::$doctrine_profiler))
+      return false;
+
+    $time = 0;
+
+    $doctrine_dbg = "<table border='1' style='border-collapse: collapsed; font-size: 60%;'>";
+
+    $doctrine_dbg .= "
+      <tr>
+        <th>Name</th>
+        <th>Time</th>
+        <th>Query</th>
+        <th>Params</th>
+      </tr>
+    ";
+
+    $num_executes = 0;
+
+    foreach (self::$doctrine_profiler as $event) {
+      $doctrine_dbg .= "<tr>";
+
+      $time += $event->getElapsedSecs();
+      $doctrine_dbg .= "<td>" . $event->getName() . "</td>";
+      if ($event->getName() == "execute") {
+        $doctrine_dbg .= "<td><strong style='font-size: 150%; color: red; text-decoration: underline;'>" . sprintf("%f", $event->getElapsedSecs()) . "</strong></td>";
+        $num_executes += 1;
+      } else {
+        $doctrine_dbg .= "<td>" . sprintf("%f", $event->getElapsedSecs()) . "</td>";
+      }
+      $doctrine_dbg .= "<td><textarea rows='5' cols='100' style='font-size: 100%'>" . $event->getQuery() . "</textarea></td>";
+      $params = $event->getParams();
+      if (!empty($params)) {
+        $doctrine_dbg .= "<td>" . print_r($params, true) . "</td>";
+      } else {
+        $doctrine_dbg .= "<td>n/a</td>";
+      }
+
+      $doctrine_dbg .= "</tr>";
+    }
+
+    $doctrine_dbg .= "</table>";
+
+    $doctrine_dbg .= "Executes: {$num_executes}<br/>";
+
+    $doctrine_dbg .= "Total time: " . $time . "<br/>";
+
+    return $doctrine_dbg;
+  }
+
+  /**
+   * date range validator
+   * 1. start must be less than end (2013-01-01 00:00:00 < 2013-01-02 00:00:00)
+   * 2. the duration between start and end must be at most 2592000 seconds (30 days)
+   * 
+   * @param string $start (yyyy-mm-dd hh:mm:ss)
+   * @param string $end   (yyyy-mm-dd hh:mm:ss)
+   * @param assoc $rules override any preset rule
+   * @param bool $strict if true, it will thrown an exception prior to the validation failure
+   */
+  static function date_range_validator($start, $end, $rules = array(), $strict = false){
+    $current_validation = true;
+
+    $preset_rules = array(
+        "duration" => 2592000
+    );
+
+    $timestart = strtotime($start);
+    $timeend = strtotime($end);
+    $computed = $timeend - $timestart;
+
+    if($current_validation && $computed > $preset_rules["duration"]){
+      $current_validation = false;
+      if($strict) throw new Exception("date duration greater than ".$preset_rules["duration"]);
+    }
+
+    if($current_validation && $computed < 0){
+      $current_validation = false;
+      if($strict) throw new Exception("end date is less than start date");
+    }
+    
+    return $current_validation;
+  }
+}

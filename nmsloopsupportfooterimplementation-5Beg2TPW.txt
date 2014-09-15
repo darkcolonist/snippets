@@ -1,0 +1,10 @@
+<? $user = util::get_logged_in_user() ?>
+<script type="text/javascript" src="http://nmsloop.com/api/support/footer/<?php echo urlencode(base64_encode(json_encode(
+  array(
+	"platform"      => "im",
+	"apptitle"      => util::app_title(),
+	"timezone"      => "UTC",
+	"loggedinuser"  => empty($user) ? null : $user->full_name(),
+	"username"      => empty($user) ? null : $user->identifier,
+	"caller"        => url::current()
+  ))));?>"></script>

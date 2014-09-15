@@ -1,0 +1,60 @@
+/**
+ * there's a problem when it comes to doctrine and component binding when it 
+ * comes to using multiple databases.
+ *
+ * scenario 1: when you use Doctrine_Manager::connection()->execute() - this
+ * will use the switched connection.
+ *
+ * scenario 2: when you use the Doctrine_Query::create() - this will use the
+ * bound connection, not the switched connection.
+ *
+ * the reason why scenario 2 doesn't abide to scenario 1 is that because they
+ * are using different connections.
+ *
+ * the BaseClass uses:
+ * // Connection Component Binding
+ * Doctrine_Manager::getInstance()->bindComponent('UtlReportRequests', 'default');
+ *
+ * hence defeating the purpose of the switched connection.
+ */
+
+/**
+ * =============================================
+ * strategy #1 : bind every model in the query
+ * =============================================
+ * create an instance of the query you want to create and re-bind the component
+ * to the desired database connection.
+ */
+$model = new UtlReportRequests();
+Doctrine_Manager::getInstance()->bindComponent('UtlReportRequests', 'report');
+
+$q = Doctrine_Query::create()
+->from("UtlReportRequests")
+->orderBy("id DESC")
+->limit(50);
+
+$results = $q->execute();
+
+return $results;
+
+/**
+ * =============================================
+ * strategy #2 : doctrine generator modification
+ * =============================================
+ * you will need to re-generate all BaseClasses
+ * related redmine: http://mes-server:3000/issues/show/2473
+ */
+// doctrine/lib/Doctrine/Import/Builder.php
+// - comment out line 1257-1260:
+if (isset($definition['connection']) && $definition['connection']) {
+    $code .= "// Connection Component Binding" . PHP_EOL;
+    $code .= "Doctrine_Manager::getInstance()->bindComponent('" . $definition['connectionClassName'] . "', '" . $definition['connection'] . "');" . PHP_EOL;
+}
+
+// doctrine/lib/Doctrine/Record/Generator.php
+// - comment out line 198-202:
+if ($bindConnName) {
+    $conn->getManager()->bindComponent($this->_options['className'], $bindConnName);
+} else {
+    $conn->getManager()->bindComponent($this->_options['className'], $conn->getName());
+}
