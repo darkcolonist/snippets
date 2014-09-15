@@ -13,19 +13,33 @@ $("#service").autocomplete({
       },
       success : function(data){
         $("#service_id").val("");
-        response(data);
+
+        if(!data.length){
+          response([{
+            label : "no results found",
+            value : null
+          }]);
+        }else{
+          response(data); 
+        }
       }
     });
   },
   minlength : 2,
   focus : function(event, ui){
-    $("#service").val(ui.item.label);
-    $("#service_id").val(ui.item.value);
+    if(ui.item.value != null){
+      $("#service").val(ui.item.label);
+      $("#service_id").val(ui.item.value);
+    }
+
     return false;
   },
   select : function(event, ui){
-    $("#service").val(ui.item.label);
-    $("#service_id").val(ui.item.value);
+    if(ui.item.value != null){
+      $("#service").val(ui.item.label);
+      $("#service_id").val(ui.item.value);
+    }
+    
     return false;
   }
 });
