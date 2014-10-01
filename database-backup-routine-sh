@@ -1,0 +1,7 @@
+BACKUPFILE="db_name_`date +\%Y-\%m-\%d`.sql.tar.gz";
+mysqldump -u db_user -pSECURE_PASSWORD db_name > db_name.sql;
+tar -czf $BACKUPFILE db_name.sql;
+rm db_name.sql;
+echo "new database backup: $BACKUPFILE";
+find ./*gz -mtime +7 -exec rm {} \;
+echo "deleted backup files older than 7 days";
