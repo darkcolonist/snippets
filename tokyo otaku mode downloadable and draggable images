@@ -1,0 +1,32 @@
+// ==UserScript==
+// @name         tokyo otaku mode downloadable and draggable images
+// @namespace    jQueryForChromeExample
+// @include      http*://*otakumode.com/*
+// @author       Christian Noel Reyes
+// @description  in tokyo otaku mode, images and pictures cannot be saved not unless you use the inspect tool. 
+//               this script instead makes the images draggable and downloadable. you will know that the image
+//				 is downloadable once red dotted lines outline the image
+// ==/UserScript==
+
+// a function that loads jQuery and calls a callback function when jQuery has finished loading
+function addJQuery(callback) {
+  var script = document.createElement("script");
+  script.setAttribute("src", "//ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js");
+  script.addEventListener('load', function() {
+    var script = document.createElement("script");
+    script.textContent = "window.jQ=jQuery.noConflict(true);(" + callback.toString() + ")();";
+    document.body.appendChild(script);
+  }, false);
+  document.body.appendChild(script);
+}
+
+// the guts of this userscript
+function main() {
+  // Note, jQ replaces $ to avoid conflicts.
+    jQ("img.nodraggable").removeClass().css({
+        border : "3px dotted red"
+    });
+}
+
+// load jQuery and execute the main function
+addJQuery(main);
