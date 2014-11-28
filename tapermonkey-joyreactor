@@ -2,6 +2,7 @@
 // @name         joyreactor media expose
 // @namespace    jQueryForChromeExample
 // @include      http*://*joyreactor.cc/*
+// @include      http*://*joyreactor.com/*
 // @author       Christian Noel Reyes
 // @description  automatically exposes enlarged / downloadable media files
 // ==/UserScript==
@@ -28,6 +29,17 @@ function main() {
         .attr("width", 800)
         .css({
           "border" : "2px dotted red"
+        })
+    );
+  });
+    
+  jQ("a.video_gif_source").each(function(index,value){
+    var obj = jQ(value);
+    obj.replaceWith(
+      jQ("<img>").attr("src", obj.attr("href"))
+        .attr("width", 800)
+        .css({
+          "border" : "2px dotted blue"
         })
     );
   });
