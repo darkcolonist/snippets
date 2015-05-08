@@ -52,7 +52,7 @@ done;
 # ... NOTE: this script will run in an infinite loop
 # ... NOTE: every iteration will be freed of memory making the return garbage collection of php in effect
 # ... NOTE: to run this script, say script name is: myscript.sh
-# ...  $ nohup bash myscript.sh -o test -c "php test.php \"example/example/example\" | tail -n 1" &
+# ...  $ nohup bash myscript.sh -o test -c "php test.php \"example/example/example\" | tail -n 1" > /dev/null &
 # ... NOTE: myscript.sh.out will contain
 # ...  $ tail myscript.sh.out
 # ...  $> pid: <process id> | iteration: <iteration number> | response: <output>
