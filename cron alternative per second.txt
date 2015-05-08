@@ -29,7 +29,6 @@ done
 COUNT=1;
 # begin iteration
 while [ true ]; do # infinite iteration
-  # php /var/www/html/logger.php
   INLINETIME=`date +'%H%M%S'`;
   TODAYDATE=`date +'%Y%m%d'`;
   RESPONSE=$(wget -t $TRIES --timeout $TIMEOUT $URL -q -O -);
