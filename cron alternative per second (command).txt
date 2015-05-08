@@ -11,7 +11,8 @@ OUTFILE="example";
 OUTLIMIT=100;
 TIMEOUT=300;
 TRIES=1;
-while getopts c:o:l:t:r: option
+SLEEP=1;
+while getopts c:o:l:t:r:s: option
 do
     case "${option}"
     in
@@ -20,6 +21,7 @@ do
       l) OUTLIMIT=${OPTARG};; # outfile limit [default: 100]
       t) TIMEOUT=${OPTARG};;  # wget timeout, in seconds [default: 300]
       r) TRIES=${OPTARG};;    # how many times to try when timeout? [default: 1]
+      s) SLEEP=${OPTARG};;    # how many seconds to sleep before next iteration? [default: 1]
     esac
 done
 # end config
@@ -39,7 +41,7 @@ while [ true ]; do # infinite iteration
   echo -e "$LOG\n$OUTPUT" > "$OUTFILE.out";
   echo $OUTPUT;
   let COUNT=COUNT+1;
-  sleep 1;
+  sleep $SLEEP;
 done;
 #end iteration
 
@@ -50,7 +52,7 @@ done;
 # ... NOTE: this script will run in an infinite loop
 # ... NOTE: every iteration will be freed of memory making the return garbage collection of php in effect
 # ... NOTE: to run this script, say script name is: myscript.sh
-# ...  $ nohup ./myscript.sh &
+# ...  $ nohup bash myscript.sh -o test -c "php test.php \"example/example/example\" | tail -n 1" &
 # ... NOTE: myscript.sh.out will contain
 # ...  $ tail myscript.sh.out
 # ...  $> pid: <process id> | iteration: <iteration number> | response: <output>
