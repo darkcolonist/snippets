@@ -1,0 +1,33 @@
+/**
+ * legend:
+ *   - denotes task accomplished
+ *   + denotes task that is partially functional
+ *   * denotes issue / problem
+ *
+ * send the email to:
+ *   subject: Work Report - Team Kuneho - 2015-07-11
+ *   to: mcr@newmediastaff.com, jo@newmediastaff.com
+ *   cc: rc@newmediastaff.com, cnr@newmediaservices.com.au
+ *
+ * note: be ELABORATE when listing down tasks!!!
+ */
+
+July 11, 2015
+Jethro - 09:00AM to 06:00PM (8hrs)
+- started development
+- accomplished login page
+- accomplished registration page
++ there's a problem in the ajax, can be fixed soon without help
+* unable to continue with the landing pages upon logon due to session problem (need assistance)
+* we need help on the templating of codeigniter
+
+Xyla - 09:00AM to 06:00PM (8hrs)
+- created design for login page
+- created design for users page
+* problem with template, conversion to PHP
+
+Riza - 09:00AM to 05:00PM (7hrs)
+- implemented login page validation
+- implemented login page form
++ there's still a bug in the login page that will be fixed soon
+* problem with validation helpers
