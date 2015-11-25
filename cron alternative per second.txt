@@ -1,3 +1,4 @@
+# IMPORTANT: this is no longer being updated; fork available via gist @ https://gist.github.com/darkcolonist/743c4ae6052279981085
 # @author: Christian Noel Reyes <darkcolonist@gmail.com>
 # @description: WGET iterator / CRON alternative
 # @date: 2013-01-16
